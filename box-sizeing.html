@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Sizing Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Box Sizing Demo</h1>
+        
+        <div class="info-panel">
+            <h2>Understanding Box Sizing</h2>
+            <p>The <span class="code">box-sizing</span> property controls how the total width and height of an element is calculated.</p>
+            <p><strong>content-box (default):</strong> Width and height only apply to the content area. Padding and border are added to the specified dimensions.</p>
+            <p><strong>border-box:</strong> Width and height include content, padding, and border. The specified width/height is the total size of the element.</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="paddingRange">Padding:</label>
+                <input type="range" id="paddingRange" min="0" max="50" value="20">
+                <span id="paddingValue" class="value-display">20px</span>
+            </div>
+            <div class="control-group">
+                <label for="borderRange">Border Width:</label>
+                <input type="range" id="borderRange" min="0" max="30" value="10">
+                <span id="borderValue" class="value-display">10px</span>
+            </div>
+        </div>
+        
+        <div class="visual-guide"></div>
+        
+        <div class="demo-container">
+            <div class="box content-box" id="contentBox">
+                <strong>content-box</strong> (default)
+                <div class="dimensions">Actual: <span id="contentBoxSize">240×190px</span></div>
+            </div>
+            
+            <div class="box border-box" id="borderBox">
+                <strong>border-box</strong>
+                <div class="dimensions">Actual: <span id="borderBoxSize">200×150px</span></div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>Key Observations:</h3>
+            <ul>
+                <li>With <span class="code">content-box</span>, the actual size grows when you add padding or borders.</li>
+                <li>With <span class="code">border-box</span>, the element maintains its specified dimensions, and the content area shrinks to accommodate padding and borders.</li>
+                <li><span class="code">border-box</span> makes layouts more predictable and is often set globally in CSS resets.</li>
+            </ul>
+            
+            <h3>Global Reset Example:</h3>
+            <pre><code>html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}</code></pre>
+        </div>
+    </div>
+
+    <script>
+        const paddingSlider = document.getElementById('paddingRange');
+        const borderSlider = document.getElementById('borderRange');
+        const paddingValue = document.getElementById('paddingValue');
+        const borderValue = document.getElementById('borderValue');
+        const contentBox = document.getElementById('contentBox');
+        const borderBox = document.getElementById('borderBox');
+        const contentBoxSize = document.getElementById('contentBoxSize');
+        const borderBoxSize = document.getElementById('borderBoxSize');
+        
+        function updateBoxes() {
+            const padding = paddingSlider.value + 'px';
+            const border = borderSlider.value + 'px';
+            
+            // Update display values
+            paddingValue.textContent = padding;
+            borderValue.textContent = border;
+            
+            // Update box styles
+            contentBox.style.padding = padding;
+            contentBox.style.borderWidth = border;
+            
+            borderBox.style.padding = padding;
+            borderBox.style.borderWidth = border;
+            
+            // Update dimension displays
+            updateDimensions();
+        }
+        
+        function updateDimensions() {
+            // Get computed dimensions
+            const contentBoxRect = contentBox.getBoundingClientRect();
+            const borderBoxRect = borderBox.getBoundingClientRect();
+            
+            // Update dimension displays
+            contentBoxSize.textContent = `${Math.round(contentBoxRect.width)}×${Math.round(contentBoxRect.height)}px`;
+            borderBoxSize.textContent = `${Math.round(borderBoxRect.width)}×${Math.round(borderBoxRect.height)}px`;
+        }
+        
+        // Add event listeners
+        paddingSlider.addEventListener('input', updateBoxes);
+        borderSlider.addEventListener('input', updateBoxes);
+        
+        // Initial update
+        updateBoxes();
+        
+        // Update dimensions on window resize
+        window.addEventListener('resize', updateDimensions);
+    </script>
+</body>
+</html>
